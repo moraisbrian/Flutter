@@ -106,6 +106,8 @@ class Contact {
     img = map[imgColumn];
   }
 
+  Contact();
+
   int id;
   String name;
   String email;
