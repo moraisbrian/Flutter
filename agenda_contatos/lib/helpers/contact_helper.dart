@@ -26,10 +26,10 @@ class ContactHelper {
 
   Future<Database> initDb() async {
     final databasesPath = await getDatabasesPath();
-    final path = join(databasesPath, "contacts.db");
+    final path = join(databasesPath, "mycontacts.db");
 
     String sqlCommand = "CREATE TABLE $contactTable (";
-    sqlCommand += "$idColumn, INTEGER PRIMARY KEY, ";
+    sqlCommand += "$idColumn INTEGER PRIMARY KEY AUTOINCREMENT, ";
     sqlCommand += "$nameColumn TEXT, ";
     sqlCommand += "$emailColumn TEXT, ";
     sqlCommand += "$phoneColumn TEXT, ";
