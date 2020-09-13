@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:agenda_contatos/helpers/contact_helper.dart';
 import 'package:agenda_contatos/ui/contact_page.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -86,9 +87,104 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       onTap: () {
-        _showContactPage(contact: contacts[index]);
+        _showOptions(context, index);
       },
     );
+  }
+
+  void _showOptions(BuildContext context, int index) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return BottomSheet(
+            onClosing: () {},
+            builder: (context) {
+              return Container(
+                padding: EdgeInsets.all(10.0),
+                child: Row(
+                  // Anteriormente era Column
+                  mainAxisAlignment: MainAxisAlignment
+                      .center, // Adicionado após a alteração para Row
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Removido FlatButtons e adicionado IconButtons
+                    // Padding(
+                    //   padding: EdgeInsets.all(10.0),
+                    //   child: FlatButton(
+                    //     child: Text(
+                    //       "Ligar",
+                    //       style: TextStyle(color: Colors.red, fontSize: 20.0),
+                    //     ),
+                    //     onPressed: () {},
+                    //   ),
+                    // ),
+                    // Padding(
+                    //   padding: EdgeInsets.all(10.0),
+                    //   child: FlatButton(
+                    //     child: Text(
+                    //       "Editar",
+                    //       style: TextStyle(color: Colors.red, fontSize: 20.0),
+                    //     ),
+                    //     onPressed: () {
+                    //       Navigator.pop(context);
+                    //       _showContactPage(contact: contacts[index]);
+                    //     },
+                    //   ),
+                    // ),
+                    // Padding(
+                    //   padding: EdgeInsets.all(10.0),
+                    //   child: FlatButton(
+                    //     child: Text(
+                    //       "Excluir",
+                    //       style: TextStyle(color: Colors.red, fontSize: 20.0),
+                    //     ),
+                    //     onPressed: () {},
+                    //   ),
+                    // ),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.call,
+                          color: Colors.green,
+                        ),
+                        onPressed: () {
+                          launch("tel:${contacts[index].phone}");
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.edit,
+                          color: Colors.blue,
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _showContactPage(contact: contacts[index]);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                        onPressed: () {
+                          _deleteContact(context, index);
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+          );
+        });
   }
 
   void _getAllContacts() {
@@ -97,6 +193,38 @@ class _HomePageState extends State<HomePage> {
         contacts = list;
       });
     });
+  }
+
+  void _deleteContact(BuildContext context, int index) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Atenção"),
+          content: Text("Deseja realmente deletar o contato?"),
+          actions: [
+            FlatButton(
+              child: Text("Sim"),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+                setState(() {
+                  helper.deleteContact(contacts[index].id);
+                  contacts.removeAt(index);
+                });
+              },
+            ),
+            FlatButton(
+              child: Text("Cancelar"),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _showContactPage({Contact contact}) async {
