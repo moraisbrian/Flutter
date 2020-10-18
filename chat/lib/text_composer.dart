@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
 
 class TextComposer extends StatefulWidget {
+  TextComposer(this.sendMessage);
+  Function(String) sendMessage;
+
   @override
   _TextComposerState createState() => _TextComposerState();
 }
 
 class _TextComposerState extends State<TextComposer> {
   bool _isComposing = false;
+  final TextEditingController _controller = TextEditingController();
+
+  void _reset() {
+    _controller.clear();
+    setState(() {
+      _isComposing = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,27 +28,36 @@ class _TextComposerState extends State<TextComposer> {
       child: Row(
         children: [
           IconButton(
-            icon: Icon(
-              Icons.photo_camera,
-            ),
-            onPressed: () {},
+           icon: Icon(
+             Icons.photo_camera,
+           ),
+           onPressed: () {},
           ),
-          TextField(
-            decoration: InputDecoration.collapsed(
-              hintText: "Enviar uma Mensagem",
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              decoration: InputDecoration.collapsed(
+                hintText: "Enviar uma Mensagem",
+              ),
+              onChanged: (text) {
+                setState(() {
+                  _isComposing = text.isNotEmpty;
+                });
+              },
+              onSubmitted: (text) {
+                widget.sendMessage(text);
+                _reset();
+              },
             ),
-            onChanged: (text) {
-              setState(() {
-                _isComposing = text.isNotEmpty;
-              });
-            },
-            onSubmitted: (text) {},
           ),
           IconButton(
             icon: Icon(
               Icons.send,
             ),
-            onPressed: _isComposing ? () {} : null,
+            onPressed: _isComposing ? () {
+              widget.sendMessage(_controller.text);
+              _reset();
+            } : null,
           )
         ],
       ),
