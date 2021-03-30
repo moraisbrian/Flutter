@@ -9,7 +9,9 @@ class ProductsTab extends StatelessWidget {
       future: FirebaseFirestore.instance.collection('products').get(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return CircularProgressIndicator();
+          return Center(
+            child: CircularProgressIndicator(),
+          );
         } else {
           var tales = ListTile.divideTiles(
                   tiles: snapshot.data.docs.map((doc) {
