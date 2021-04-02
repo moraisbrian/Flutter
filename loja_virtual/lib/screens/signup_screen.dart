@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:loja_virtual/models/user_model.dart';
-import 'package:loja_virtual/screens/signup_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class LoginScreen extends StatefulWidget {
+class SignUpScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
+  final _addressController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -18,25 +19,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Entrar'),
+        title: Text('Criar Conta'),
         centerTitle: true,
-        actions: [
-          TextButton(
-            child: Text(
-              'CRIAR CONTA',
-              style: TextStyle(
-                fontSize: 15.0,
-                color: Colors.white,
-              ),
-            ),
-            onPressed: () {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => SignUpScreen()),
-              );
-            },
-          ),
-        ],
       ),
       body: ScopedModelDescendant<UserModel>(
         builder: (context, child, model) {
@@ -49,6 +35,21 @@ class _LoginScreenState extends State<LoginScreen> {
             child: ListView(
               padding: EdgeInsets.all(16.0),
               children: [
+                TextFormField(
+                  controller: _nameController,
+                  validator: (text) {
+                    if (text.isEmpty)
+                      return 'Nome Inválido';
+                    else
+                      return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Nome Completo',
+                  ),
+                ),
+                SizedBox(
+                  height: 16.0,
+                ),
                 TextFormField(
                   controller: _emailController,
                   validator: (text) {
@@ -78,48 +79,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   obscureText: true,
                 ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                    ),
-                    onPressed: () {
-                      if (_emailController.text.isEmpty) {
-                        ScaffoldMessenger.of(_scaffoldKey.currentContext)
-                            .showSnackBar(
-                          SnackBar(
-                            content:
-                                Text('Insira seu e-mail para recuperação!'),
-                            backgroundColor: Colors.redAccent,
-                            duration: Duration(seconds: 2),
-                          ),
-                        );
-                        Future.delayed(Duration(seconds: 2)).then(
-                          (_) => Navigator.of(context).pop(),
-                        );
-                      } else {
-                        model.recoverPass(_emailController.text);
-                        ScaffoldMessenger.of(_scaffoldKey.currentContext)
-                            .showSnackBar(
-                          SnackBar(
-                            content: Text('Confira seu e-mail!'),
-                            backgroundColor: Theme.of(context).primaryColor,
-                            duration: Duration(seconds: 2),
-                          ),
-                        );
-                        Future.delayed(Duration(seconds: 2)).then(
-                          (_) => Navigator.of(context).pop(),
-                        );
-                      }
-                    },
-                    child: Text(
-                      'Esqueci minha senha',
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
+                SizedBox(
+                  height: 16.0,
+                ),
+                TextFormField(
+                  controller: _addressController,
+                  validator: (text) {
+                    if (text.isEmpty)
+                      return 'Endereço inválido';
+                    else
+                      return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Endereço',
                   ),
                 ),
                 SizedBox(
@@ -130,16 +102,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        model.signIn(
-                          email: _emailController.text,
-                          pass: _passController.text,
-                          onFail: _onFail,
-                          onSuccess: _onSuccess,
-                        );
+                        Map<String, dynamic> userData = {
+                          'name': _nameController.text,
+                          'email': _emailController.text,
+                          'address': _addressController.text
+                        };
+
+                        model.signUp(
+                            userData: userData,
+                            pass: _passController.text,
+                            onSuccess: _onSuccess,
+                            onFail: _onFail);
                       }
                     },
                     child: Text(
-                      'Entrar',
+                      'Criar Conta',
                       style: TextStyle(
                         fontSize: 18.0,
                         color: Colors.white,
@@ -167,13 +144,22 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onSuccess() {
-    Navigator.of(context).pop();
+    ScaffoldMessenger.of(_scaffoldKey.currentContext).showSnackBar(
+      SnackBar(
+        content: Text('Usuário criado com sucesso!'),
+        backgroundColor: Theme.of(context).primaryColor,
+        duration: Duration(seconds: 2),
+      ),
+    );
+    Future.delayed(Duration(seconds: 2)).then(
+      (_) => Navigator.of(context).pop(),
+    );
   }
 
   void _onFail() {
     ScaffoldMessenger.of(_scaffoldKey.currentContext).showSnackBar(
       SnackBar(
-        content: Text('Falha ao entrar!'),
+        content: Text('Falha ao criar usuário!'),
         backgroundColor: Colors.redAccent,
         duration: Duration(seconds: 2),
       ),
