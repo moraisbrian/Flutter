@@ -1,9 +1,15 @@
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:loja_virtual/datas/cart_product.dart';
+import 'package:loja_virtual/models/cart_model.dart';
+import 'package:loja_virtual/models/user_model.dart';
 import '../datas/product_data.dart';
+import 'login_screen.dart';
+import 'cart_screen.dart';
 
 class ProductScreen extends StatefulWidget {
   final ProductData product;
+
   ProductScreen(this.product);
 
   @override
@@ -13,7 +19,9 @@ class ProductScreen extends StatefulWidget {
 class _ProductScreenState extends State<ProductScreen> {
   final ProductData product;
   String size;
+
   _ProductScreenState(this.product);
+
   @override
   Widget build(BuildContext context) {
     final Color primaryColor = Theme.of(context).primaryColor;
@@ -107,9 +115,33 @@ class _ProductScreenState extends State<ProductScreen> {
                 SizedBox(
                   height: 44.0,
                   child: ElevatedButton(
-                    onPressed: size != null ? () {} : null,
+                    onPressed: size != null
+                        ? () {
+                            if (UserModel.of(context).isLoggedIn()) {
+                              CartProduct cartProduct = CartProduct();
+                              cartProduct.size = size;
+                              cartProduct.quantity = 1;
+                              cartProduct.pid = product.id;
+                              cartProduct.category = product.category;
+                              CartModel.of(context).addCartItem(cartProduct);
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => CartScreen(),
+                                ),
+                              );
+                            } else {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => LoginScreen(),
+                                ),
+                              );
+                            }
+                          }
+                        : null,
                     child: Text(
-                      "Adicionar ao Carrinho",
+                      UserModel.of(context).isLoggedIn()
+                          ? 'Adicionar ao Carrinho'
+                          : 'Entre Para Comprar',
                       style: TextStyle(
                         fontSize: 18.0,
                         color: Colors.white,

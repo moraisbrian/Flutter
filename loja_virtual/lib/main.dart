@@ -26,17 +26,21 @@ class MyApp extends StatelessWidget {
           default:
             return ScopedModel<UserModel>(
               model: UserModel(),
-              child: ScopedModel<CartModel>(
-                model: CartModel(),
-                child: MaterialApp(
-                  title: 'Loja Virtual',
-                  theme: ThemeData(
-                    primarySwatch: Colors.blue,
-                    primaryColor: Color.fromARGB(255, 4, 125, 141),
-                  ),
-                  debugShowCheckedModeBanner: false,
-                  home: HomeScreen(),
-                ),
+              child: ScopedModelDescendant<UserModel>(
+                builder: (context, child, model) {
+                  return ScopedModel<CartModel>(
+                    model: CartModel(model),
+                    child: MaterialApp(
+                      title: 'Loja Virtual',
+                      theme: ThemeData(
+                        primarySwatch: Colors.blue,
+                        primaryColor: Color.fromARGB(255, 4, 125, 141),
+                      ),
+                      debugShowCheckedModeBanner: false,
+                      home: HomeScreen(),
+                    ),
+                  );
+                },
               ),
             );
         }

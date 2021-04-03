@@ -52,11 +52,13 @@ class CategoryScreen extends StatelessWidget {
                     ),
                     itemCount: snapshot.data.docs.length,
                     itemBuilder: (context, index) {
+                      ProductData productData = ProductData.fromDocument(
+                        snapshot.data.docs[index],
+                      );
+                      productData.category = this.snapshot.id;
                       return ProductTile(
                         "grid",
-                        ProductData.fromDocument(
-                          snapshot.data.docs[index],
-                        ),
+                        productData,
                       );
                     },
                   ),
@@ -64,11 +66,13 @@ class CategoryScreen extends StatelessWidget {
                     padding: EdgeInsets.all(4.0),
                     itemCount: snapshot.data.docs.length,
                     itemBuilder: (context, index) {
+                      ProductData productData = ProductData.fromDocument(
+                        snapshot.data.docs[index],
+                      );
+                      productData.category = this.snapshot.id;
                       return ProductTile(
                         "list",
-                        ProductData.fromDocument(
-                          snapshot.data.docs[index],
-                        ),
+                        productData,
                       );
                     },
                   ),
