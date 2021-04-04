@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:loja_virtual/datas/cart_product.dart';
+import 'package:loja_virtual/datas/product_data.dart';
 import 'package:loja_virtual/models/user_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -119,10 +120,16 @@ class CartModel extends Model {
     double shipPrice = getShipPrice();
     double discount = getDiscount();
 
+    List<Map<String, dynamic>> productsMap = [];
+    for (CartProduct prod in products) {
+      Map<String, dynamic> map = prod.toMap();
+      productsMap.add(map);
+    }
+
     DocumentReference docRef =
         await FirebaseFirestore.instance.collection('orders').add({
       "clientId": user.firebaseUser.uid,
-      //"products": products.map((e) => e.toMap()),
+      "products": productsMap,
       "shipPrice": shipPrice,
       "productsPrice": productsPrice,
       "discount": discount,
