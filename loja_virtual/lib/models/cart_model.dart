@@ -123,6 +123,7 @@ class CartModel extends Model {
     List<Map<String, dynamic>> productsMap = [];
     for (CartProduct prod in products) {
       Map<String, dynamic> map = prod.toMap();
+      map['product'] = prod.productData.toResumedMap();
       productsMap.add(map);
     }
 

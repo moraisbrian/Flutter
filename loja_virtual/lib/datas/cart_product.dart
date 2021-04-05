@@ -19,11 +19,6 @@ class CartProduct {
     size = document.data()['size'];
   }
 
-  Map<String, dynamic> toMap() => {
-        "category": category,
-        "pid": pid,
-        "quantity": quantity,
-        "size": size,
-        "product": productData.toResumedMap()
-      };
+  Map<String, dynamic> toMap() =>
+      {"category": category, "pid": pid, "quantity": quantity, "size": size};
 }
