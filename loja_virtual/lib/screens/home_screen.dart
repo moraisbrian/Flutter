@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loja_virtual/tabs/home_tab.dart';
 import 'package:loja_virtual/tabs/orders_tab.dart';
+import 'package:loja_virtual/tabs/places_tab.dart';
 import 'package:loja_virtual/tabs/products_tab.dart';
 import 'package:loja_virtual/widgets/custom_drawer.dart';
 import '../widgets/cart_button.dart';
@@ -32,9 +33,7 @@ class HomeScreen extends StatelessWidget {
             title: Text('Lojas'),
             centerTitle: true,
           ),
-          body: Container(
-            color: Colors.green,
-          ),
+          body: PlacesTab(),
           drawer: CustomDrawer(_pageController),
         ),
         Scaffold(
