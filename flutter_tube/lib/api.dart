@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'models/video.dart';
-
-const API_KEY = 'AIzaSyC7nTf-8jRBgV7PWFPJk5re-yFygWOV0ZA';
+import 'api_key.dart';
 
 class Api {
   search(String search) async {

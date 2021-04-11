@@ -104,4 +104,7 @@ $RECYCLE.BIN/
 # Firebase auth
 **/android/**/google-services.json
 
+# Google Api keys
+**/api_key.dart
+
 # End of https://www.gitignore.io/api/dart,windows,flutter
