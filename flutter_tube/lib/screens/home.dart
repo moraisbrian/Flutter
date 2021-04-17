@@ -1,7 +1,9 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tube/blocs/favorite_bloc.dart';
 import 'package:flutter_tube/blocs/videos_bloc.dart';
 import 'package:flutter_tube/delegates/data_search.dart';
+import 'package:flutter_tube/models/video.dart';
 import 'package:flutter_tube/widgets/videos_tile.dart';
 
 class Home extends StatelessWidget {
@@ -19,7 +21,17 @@ class Home extends StatelessWidget {
         actions: [
           Align(
             alignment: Alignment.center,
-            child: Text('0'),
+            child: StreamBuilder<Map<String, Video>>(
+              initialData: {},
+              stream: BlocProvider.getBloc<FavoriteBloc>().outFav,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(snapshot.data.length.toString());
+                } else {
+                  return Text('0');
+                }
+              },
+            ),
           ),
           IconButton(
             icon: Icon(Icons.star),
@@ -41,7 +53,6 @@ class Home extends StatelessWidget {
       ),
       body: StreamBuilder(
         stream: BlocProvider.getBloc<VideosBloc>().outVideos,
-        initialData: [],
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
