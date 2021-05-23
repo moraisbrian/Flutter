@@ -1,8 +1,11 @@
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:gerente_loja/blocs/login_bloc.dart';
 import 'package:gerente_loja/screens/login_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
@@ -14,19 +17,25 @@ class MyApp extends StatelessWidget {
       future: _initialization,
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
           case ConnectionState.none:
+          case ConnectionState.waiting:
             return Center(
               child: CircularProgressIndicator(),
             );
           default:
-            return MaterialApp(
-              title: 'Gerente Loja',
-              theme: ThemeData(
-                primarySwatch: Colors.blue,
+            return BlocProvider(
+              blocs: [
+                Bloc((i) => LoginBloc()),
+              ],
+              dependencies: [],
+              child: MaterialApp(
+                title: 'Gerente Loja',
+                theme: ThemeData(
+                  primarySwatch: Colors.blue,
+                ),
+                debugShowCheckedModeBanner: false,
+                home: LoginScreen(),
               ),
-              home: LoginScreen(),
-              debugShowCheckedModeBanner: false,
             );
         }
       },
