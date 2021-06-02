@@ -37,7 +37,7 @@ class UserTile extends StatelessWidget {
           ],
         ),
       );
-    } else {
+    } else if (user.containsKey('orders')) {
       return Container(
         margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(
@@ -69,6 +69,11 @@ class UserTile extends StatelessWidget {
             )
           ],
         ),
+      );
+    } else {
+      return Container(
+        width: 0.0,
+        height: 0.0,
       );
     }
   }

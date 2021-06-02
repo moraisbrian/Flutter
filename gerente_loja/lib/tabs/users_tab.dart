@@ -26,6 +26,7 @@ class UsersTab extends StatelessWidget {
               ),
               border: InputBorder.none,
             ),
+            onChanged: _userBloc.onChangedSearch,
           ),
         ),
         Expanded(

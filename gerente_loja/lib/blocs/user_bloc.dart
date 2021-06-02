@@ -38,7 +38,7 @@ class UserBloc extends BlocBase {
     });
   }
 
-  Future _subscribeToOrders(String uid) async {
+  void _subscribeToOrders(String uid) {
     _users[uid]['subscription'] = _firestore
         .collection('users')
         .doc(uid)
@@ -50,14 +50,32 @@ class UserBloc extends BlocBase {
       for (DocumentSnapshot doc in orders.docs) {
         DocumentSnapshot order =
             await _firestore.collection('orders').doc(doc.id).get();
+
         if (order.data() == null) continue;
+
         money += order.data()['totalPrice'];
-
         _users[uid].addAll({"money": money, "orders": numOrders});
-
         _userController.add(_users.values.toList());
       }
     });
+  }
+
+  void onChangedSearch(String search) {
+    if (search.trim().isEmpty) {
+      _userController.add(_users.values.toList());
+    } else {
+      _userController.add(_filter(search.trim()));
+    }
+  }
+
+  List<Map<String, dynamic>> _filter(String search) {
+    List<Map<String, dynamic>> filteredUsers =
+        List.from(_users.values.toList());
+
+    filteredUsers.retainWhere((user) {
+      return user['name'].toUpperCase().contains(search.toUpperCase());
+    });
+    return filteredUsers;
   }
 
   void _unsubscriptionToOrders(String uid) {
