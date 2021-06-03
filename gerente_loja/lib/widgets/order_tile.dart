@@ -46,7 +46,7 @@ class OrderTile extends StatelessWidget {
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: order.data()['products'].map<Widget>((p) {
-                      ListTile(
+                      return ListTile(
                         title: Text(p['product']['title'] + ' ' + p['size']),
                         subtitle: Text(p['category'] + '/' + p['pid']),
                         trailing: Text(
