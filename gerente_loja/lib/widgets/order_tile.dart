@@ -23,6 +23,8 @@ class OrderTile extends StatelessWidget {
       ),
       child: Card(
         child: ExpansionTile(
+          key: Key(order.id),
+          initiallyExpanded: order.data()['status'] != 4,
           title: Text(
             '#${order.id.substring(order.id.length - 7, order.id.length)} - ' +
                 '${states[order.data()["status"]]}',
@@ -42,7 +44,9 @@ class OrderTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  OrderHeader(),
+                  OrderHeader(
+                    order: order,
+                  ),
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: order.data()['products'].map<Widget>((p) {
@@ -61,24 +65,50 @@ class OrderTile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(order['clientId'])
+                              .collection('orders')
+                              .doc(order.id)
+                              .delete();
+                          order.reference.delete();
+                        },
                         child: Text(
                           'Excluir',
                           style: TextStyle(color: Colors.red),
                         ),
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: order.data()['status'] > 1
+                            ? () {
+                                order.reference.update(
+                                  {'status': order.data()['status'] - 1},
+                                );
+                              }
+                            : null,
                         child: Text(
                           'Regredir',
-                          style: TextStyle(color: Colors.grey[850]),
+                          style: TextStyle(
+                              color: order.data()['status'] > 1
+                                  ? Colors.grey[850]
+                                  : Colors.grey[400]),
                         ),
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: order.data()['status'] < 4
+                            ? () {
+                                order.reference.update(
+                                  {'status': order.data()['status'] + 1},
+                                );
+                              }
+                            : null,
                         child: Text(
                           'Avançar',
-                          style: TextStyle(color: Colors.green),
+                          style: TextStyle(
+                              color: order.data()['status'] < 4
+                                  ? Colors.green
+                                  : Colors.grey[400]),
                         ),
                       ),
                     ],
