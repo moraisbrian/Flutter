@@ -5,6 +5,15 @@ import 'package:gerente_loja/widgets/order_header.dart';
 class OrderTile extends StatelessWidget {
   final DocumentSnapshot order;
   OrderTile({this.order});
+
+  final states = [
+    '',
+    'Em preparação',
+    'Em transporte',
+    'Aguardando entrega',
+    'Entregue'
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,8 +24,12 @@ class OrderTile extends StatelessWidget {
       child: Card(
         child: ExpansionTile(
           title: Text(
-            '#123456 - Entrege',
-            style: TextStyle(color: Colors.green),
+            '#${order.id.substring(order.id.length - 7, order.id.length)} - ' +
+                '${states[order.data()["status"]]}',
+            style: TextStyle(
+                color: order.data()['status'] != 4
+                    ? Colors.grey[850]
+                    : Colors.green),
           ),
           children: [
             Padding(
@@ -32,17 +45,17 @@ class OrderTile extends StatelessWidget {
                   OrderHeader(),
                   Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: [
+                    children: order.data()['products'].map<Widget>((p) {
                       ListTile(
-                        title: Text('Camiseta preta P'),
-                        subtitle: Text('camisetas/xpto'),
+                        title: Text(p['product']['title'] + ' ' + p['size']),
+                        subtitle: Text(p['category'] + '/' + p['pid']),
                         trailing: Text(
-                          '2',
+                          p['quantity'].toString(),
                           style: TextStyle(fontSize: 20),
                         ),
                         contentPadding: EdgeInsets.zero,
-                      ),
-                    ],
+                      );
+                    }).toList(),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
