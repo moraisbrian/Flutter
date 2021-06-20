@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gerente_loja/blocs/login_bloc.dart';
 import 'package:gerente_loja/blocs/orders_bloc.dart';
+import 'package:gerente_loja/blocs/product_bloc.dart';
 import 'package:gerente_loja/blocs/user_bloc.dart';
 import 'package:gerente_loja/screens/login_screen.dart';
 
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
                 Bloc((i) => LoginBloc()),
                 Bloc((i) => UserBloc()),
                 Bloc((i) => OrdersBloc()),
+                Bloc((i) => ProductBloc()),
               ],
               dependencies: [],
               child: MaterialApp(
