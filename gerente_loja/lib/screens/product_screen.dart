@@ -64,7 +64,12 @@ class _ProductScreenState extends State<ProductScreen> {
                       fontSize: 12,
                     ),
                   ),
-                  ImagesWidget(),
+                  ImagesWidget(
+                    context: context,
+                    initialValue: snapshot.data['images'],
+                    onSaved: (list) {},
+                    validator: (list) {},
+                  ),
                   TextFormField(
                     initialValue: snapshot.data['title'],
                     style: _fieldStyle,
