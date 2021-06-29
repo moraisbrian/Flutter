@@ -24,4 +24,9 @@ class ProductValidator {
     if (images.isEmpty) return 'Adicione imagens do produto';
     return null;
   }
+
+  String validateSizes(List sizes) {
+    if (sizes.isEmpty) return 'Adicione um tamanho';
+    return null;
+  }
 }

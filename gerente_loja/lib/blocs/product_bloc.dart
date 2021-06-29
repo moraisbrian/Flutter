@@ -54,6 +54,10 @@ class ProductBloc extends BlocBase {
     unsavedData['images'] = images;
   }
 
+  void saveSizes(List sizes) {
+    unsavedData['sizes'] = sizes;
+  }
+
   Future<bool> saveProduct() async {
     _loadingController.add(true);
 
@@ -83,14 +87,15 @@ class ProductBloc extends BlocBase {
     for (int i = 0; i < unsavedData['images'].length; i++) {
       if (unsavedData['images'][i] is String) continue;
 
-      TaskSnapshot taskSnapshot = await FirebaseStorage.instance
+      UploadTask taskUpload = FirebaseStorage.instance
           .ref()
           .child(categoryId)
           .child(productId)
           .child(DateTime.now().millisecondsSinceEpoch.toString())
           .putFile(unsavedData['images'][i]);
 
-      Future<String> downloadUrl = taskSnapshot.ref.getDownloadURL();
+      TaskSnapshot snapshot = await taskUpload;
+      String downloadUrl = await snapshot.ref.getDownloadURL();
 
       unsavedData['images'][i] = downloadUrl;
     }
