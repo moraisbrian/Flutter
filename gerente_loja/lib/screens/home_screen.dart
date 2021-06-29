@@ -5,6 +5,7 @@ import 'package:gerente_loja/blocs/orders_bloc.dart';
 import 'package:gerente_loja/tabs/orders_tab.dart';
 import 'package:gerente_loja/tabs/products_tab.dart';
 import 'package:gerente_loja/tabs/users_tab.dart';
+import 'package:gerente_loja/widgets/edit_category_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -115,6 +116,17 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           ],
+        );
+      case 2:
+        return FloatingActionButton(
+          child: Icon(Icons.add),
+          backgroundColor: Colors.pinkAccent,
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) => EditCategoryDialog(),
+            );
+          },
         );
       default:
         return null;
