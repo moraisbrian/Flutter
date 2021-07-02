@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:todo_mobx/screens/list_screen.dart';
+import 'package:todo_mobx/stores/login_store.dart';
 import 'package:todo_mobx/widgets/custom_icon_button.dart';
 import 'package:todo_mobx/widgets/custom_text_field.dart';
-import 'list_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -9,6 +11,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  LoginStore loginStore = LoginStore();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -26,65 +29,84 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  CustomTextField(
-                    hint: 'E-mail',
-                    prefix: Icon(Icons.account_circle),
-                    textInputType: TextInputType.emailAddress,
-                    onChanged: (email) {},
-                    enabled: true,
+                  Observer(
+                    builder: (_) {
+                      return CustomTextField(
+                        hint: 'E-mail',
+                        prefix: Icon(Icons.account_circle),
+                        textInputType: TextInputType.emailAddress,
+                        onChanged: loginStore.setEmail,
+                        enabled: !loginStore.loading,
+                      );
+                    },
                   ),
                   const SizedBox(
                     height: 16,
                   ),
-                  CustomTextField(
-                    hint: 'Senha',
-                    prefix: Icon(Icons.lock),
-                    obscure: true,
-                    onChanged: (pass) {},
-                    enabled: true,
-                    suffix: CustomIconButton(
-                      radius: 32,
-                      iconData: Icons.visibility,
-                      onTap: () {},
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  SizedBox(
-                    height: 44,
-                    width: 100,
-                    child: ElevatedButton(
-                      child: Text('Login'),
-                      style: ButtonStyle(
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(32),
-                          ),
-                        ),
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.disabled)) {
-                              return Theme.of(context)
-                                  .primaryColor
-                                  .withAlpha(100);
-                            } else {
-                              return Theme.of(context).primaryColor;
-                            }
-                          },
-                        ),
+                  Observer(builder: (_) {
+                    return CustomTextField(
+                      hint: 'Senha',
+                      prefix: Icon(Icons.lock),
+                      obscure: loginStore.passwordVisible,
+                      onChanged: loginStore.setPassword,
+                      enabled: !loginStore.loading,
+                      suffix: CustomIconButton(
+                        radius: 32,
+                        iconData: loginStore.passwordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        onTap: loginStore.togglePasswordVisibility,
                       ),
-                      onPressed: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => ListScreen(),
+                    );
+                  }),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Observer(builder: (_) {
+                    return SizedBox(
+                      height: 44,
+                      width: 100,
+                      child: ElevatedButton(
+                        child: loginStore.loading
+                            ? CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation(
+                                  Colors.white,
+                                ),
+                              )
+                            : Text('Login'),
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(32),
+                            ),
                           ),
-                        );
-                      },
-                    ),
-                  )
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              if (states.contains(MaterialState.disabled)) {
+                                return Theme.of(context)
+                                    .primaryColor
+                                    .withAlpha(100);
+                              } else {
+                                return Theme.of(context).primaryColor;
+                              }
+                            },
+                          ),
+                        ),
+                        onPressed: loginStore.isFormValid
+                            ? () {
+                                loginStore.login();
+                                // Navigator.of(context).pushReplacement(
+                                //   MaterialPageRoute(
+                                //     builder: (context) => ListScreen(),
+                                //   ),
+                                // );
+                              }
+                            : null,
+                      ),
+                    );
+                  }),
                 ],
               ),
             ),
