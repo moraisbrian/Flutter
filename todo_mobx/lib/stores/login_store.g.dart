@@ -91,6 +91,21 @@ mixin _$LoginStore on _LoginStore, Store {
     });
   }
 
+  final _$loggedInAtom = Atom(name: '_LoginStore.loggedIn');
+
+  @override
+  bool get loggedIn {
+    _$loggedInAtom.reportRead();
+    return super.loggedIn;
+  }
+
+  @override
+  set loggedIn(bool value) {
+    _$loggedInAtom.reportWrite(value, super.loggedIn, () {
+      super.loggedIn = value;
+    });
+  }
+
   final _$loginAsyncAction = AsyncAction('_LoginStore.login');
 
   @override
@@ -134,12 +149,24 @@ mixin _$LoginStore on _LoginStore, Store {
   }
 
   @override
+  void logout() {
+    final _$actionInfo =
+        _$_LoginStoreActionController.startAction(name: '_LoginStore.logout');
+    try {
+      return super.logout();
+    } finally {
+      _$_LoginStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 email: ${email},
 password: ${password},
 passwordVisible: ${passwordVisible},
 loading: ${loading},
+loggedIn: ${loggedIn},
 isPasswordValid: ${isPasswordValid},
 isEmailValid: ${isEmailValid},
 isFormValid: ${isFormValid}

@@ -17,6 +17,9 @@ abstract class _LoginStore with Store {
   @observable
   bool loading = false;
 
+  @observable
+  bool loggedIn = false;
+
   @action
   void setEmail(String value) => email = value;
 
@@ -33,6 +36,14 @@ abstract class _LoginStore with Store {
     await Future.delayed(Duration(seconds: 3));
 
     loading = false;
+    loggedIn = true;
+  }
+
+  @action
+  void logout() {
+    loggedIn = false;
+    email = '';
+    password = '';
   }
 
   @computed

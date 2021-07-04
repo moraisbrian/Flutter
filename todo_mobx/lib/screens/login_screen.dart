@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_mobx/screens/list_screen.dart';
 import 'package:todo_mobx/stores/login_store.dart';
 import 'package:todo_mobx/widgets/custom_icon_button.dart';
@@ -11,7 +13,40 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  LoginStore loginStore = LoginStore();
+  late LoginStore loginStore;
+
+  late ReactionDisposer reactionDisposer;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // autorun((_) {
+    //   Navigator.of(context).pushReplacement(
+    //     MaterialPageRoute(
+    //       builder: (context) => ListScreen(),
+    //     ),
+    //   );
+    // });
+
+    loginStore = Provider.of<LoginStore>(context);
+
+    reactionDisposer = reaction((_) => loginStore.loggedIn, (bool loggedIn) {
+      if (loggedIn) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => ListScreen(),
+          ),
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    reactionDisposer();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -97,11 +132,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: loginStore.isFormValid
                             ? () {
                                 loginStore.login();
-                                // Navigator.of(context).pushReplacement(
-                                //   MaterialPageRoute(
-                                //     builder: (context) => ListScreen(),
-                                //   ),
-                                // );
                               }
                             : null,
                       ),
