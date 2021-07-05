@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:xlo_mobx/screens/base/base_screen.dart';
+import 'parse_server_credentials.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await ParseServerCredentials.initialize();
   runApp(MyApp());
 }
 
@@ -12,7 +16,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Container(),
+      debugShowCheckedModeBanner: false,
+      home: BaseScreen(),
     );
   }
 }

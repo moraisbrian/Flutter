@@ -107,4 +107,5 @@ $RECYCLE.BIN/
 # Google Api keys
 **/api_key.dart
 
-# End of https://www.gitignore.io/api/dart,windows,flutter
+# Parse Server Credentials
+**/parse_server_credentials.dart
