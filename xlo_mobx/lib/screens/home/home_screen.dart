@@ -4,9 +4,11 @@ import 'package:xlo_mobx/components/custom_drawer/custom_drawer.dart';
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      drawer: CustomDrawer(),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(),
+        drawer: CustomDrawer(),
+      ),
     );
   }
 }
