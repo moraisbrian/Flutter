@@ -1,9 +1,12 @@
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:xlo_mobx/screens/signup/components/field_title.dart';
+import 'package:xlo_mobx/stores/signup_store.dart';
 
 class SignupScreen extends StatelessWidget {
+  final SignupStore signupStore = SignupStore();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,11 +34,15 @@ class SignupScreen extends StatelessWidget {
                       title: 'Apelido',
                       subtitle: 'Como aparecerá em seus anúmcios',
                     ),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Exemplo: João S.',
-                        isDense: true,
+                    Observer(
+                      builder: (_) => TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'Exemplo: João S.',
+                          isDense: true,
+                          errorText: signupStore.nemeError,
+                        ),
+                        onChanged: signupStore.setName,
                       ),
                     ),
                     const SizedBox(
