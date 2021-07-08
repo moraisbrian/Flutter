@@ -6,9 +6,9 @@ import 'package:xlo_mobx/stores/page_store.dart';
 class Startup {
   static Future<void> _setupParseServer() async {
     await Parse().initialize(
-      ParseServerCredentials.applicationId,
-      ParseServerCredentials.serverUrl,
-      clientKey: ParseServerCredentials.clientKey,
+      applicationId,
+      serverUrl,
+      clientKey: clientKey,
       autoSendSessionId: true,
       debug: true,
     );

@@ -2,6 +2,7 @@ import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:xlo_mobx/components/error_box.dart';
 import 'package:xlo_mobx/screens/signup/components/field_title.dart';
 import 'package:xlo_mobx/stores/signup_store.dart';
 
@@ -30,12 +31,21 @@ class SignupScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    Observer(
+                      builder: (_) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: ErrorBox(
+                          message: signupStore.error,
+                        ),
+                      ),
+                    ),
                     FieldTitle(
                       title: 'Apelido',
                       subtitle: 'Como aparecerá em seus anúmcios',
                     ),
                     Observer(
                       builder: (_) => TextField(
+                        enabled: !signupStore.loading,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: 'Exemplo: João S.',
@@ -52,14 +62,19 @@ class SignupScreen extends StatelessWidget {
                       title: 'E-mail',
                       subtitle: 'Enviaremos um e-mail de confirmação',
                     ),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Exemplo: joao@example.com',
-                        isDense: true,
+                    Observer(
+                      builder: (_) => TextField(
+                        enabled: !signupStore.loading,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'Exemplo: joao@example.com',
+                          isDense: true,
+                          errorText: signupStore.emailError,
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                        autocorrect: false,
+                        onChanged: signupStore.setEmail,
                       ),
-                      keyboardType: TextInputType.emailAddress,
-                      autocorrect: false,
                     ),
                     const SizedBox(
                       height: 16,
@@ -68,17 +83,22 @@ class SignupScreen extends StatelessWidget {
                       title: 'Celular',
                       subtitle: 'Proteja sua conta',
                     ),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Exemplo: (99) 99999-9999',
-                        isDense: true,
+                    Observer(
+                      builder: (_) => TextField(
+                        enabled: !signupStore.loading,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'Exemplo: (99) 99999-9999',
+                          isDense: true,
+                          errorText: signupStore.phoneError,
+                        ),
+                        keyboardType: TextInputType.phone,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          TelefoneInputFormatter(),
+                        ],
+                        onChanged: signupStore.setPhone,
                       ),
-                      keyboardType: TextInputType.phone,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        TelefoneInputFormatter(),
-                      ],
                     ),
                     const SizedBox(
                       height: 16,
@@ -87,12 +107,17 @@ class SignupScreen extends StatelessWidget {
                       title: 'Senha',
                       subtitle: 'Use letras, números e caracteres especiais',
                     ),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        isDense: true,
+                    Observer(
+                      builder: (_) => TextField(
+                        enabled: !signupStore.loading,
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          isDense: true,
+                          errorText: signupStore.pass1Error,
+                        ),
+                        obscureText: true,
+                        onChanged: signupStore.setPass1,
                       ),
-                      obscureText: true,
                     ),
                     const SizedBox(
                       height: 16,
@@ -101,37 +126,50 @@ class SignupScreen extends StatelessWidget {
                       title: 'Confirmar Senha',
                       subtitle: 'Repita a senha',
                     ),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        isDense: true,
-                      ),
-                      obscureText: true,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 12, top: 20),
-                      height: 40,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        child: const Text(
-                          'CADASTRAR',
-                          style: TextStyle(color: Colors.white),
+                    Observer(
+                      builder: (_) => TextField(
+                        enabled: !signupStore.loading,
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          isDense: true,
+                          errorText: signupStore.pass2Error,
                         ),
-                        style: ButtonStyle(
-                          elevation: MaterialStateProperty.all<double?>(0),
-                          backgroundColor:
-                              MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                              if (states.contains(MaterialState.disabled)) {
-                                return Colors.orange.withOpacity(0.5);
-                              } else {
-                                return Colors.orange;
-                              }
-                            },
-                          ),
-                          shape: MaterialStateProperty.all<OutlinedBorder?>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
+                        obscureText: true,
+                        onChanged: signupStore.setPass2,
+                      ),
+                    ),
+                    Observer(
+                      builder: (_) => Container(
+                        margin: const EdgeInsets.only(bottom: 12, top: 20),
+                        height: 40,
+                        child: ElevatedButton(
+                          onPressed: signupStore.signUpPressed,
+                          child: signupStore.loading
+                              ? const CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation(
+                                    Colors.white,
+                                  ),
+                                )
+                              : const Text(
+                                  'CADASTRAR',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                          style: ButtonStyle(
+                            elevation: MaterialStateProperty.all<double?>(0),
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                                if (states.contains(MaterialState.disabled)) {
+                                  return Colors.orange.withOpacity(0.5);
+                                } else {
+                                  return Colors.orange;
+                                }
+                              },
+                            ),
+                            shape: MaterialStateProperty.all<OutlinedBorder?>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
                             ),
                           ),
                         ),

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:xlo_mobx/components/error_box.dart';
 import 'package:xlo_mobx/screens/signup/signup_screen.dart';
+import 'package:xlo_mobx/stores/login_store.dart';
 
 class LoginScreen extends StatelessWidget {
+  final LoginStore loginStore = LoginStore();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +30,14 @@ class LoginScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Observer(
+                      builder: (_) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: ErrorBox(
+                          message: loginStore.error,
+                        ),
+                      ),
+                    ),
                     Text(
                       'Acessar com E-mail:',
                       textAlign: TextAlign.center,
@@ -46,12 +58,17 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        isDense: true,
+                    Observer(
+                      builder: (_) => TextField(
+                        enabled: !loginStore.loading,
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          isDense: true,
+                          errorText: loginStore.emailError,
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                        onChanged: loginStore.setEmail,
                       ),
-                      keyboardType: TextInputType.emailAddress,
                     ),
                     const SizedBox(
                       height: 16,
@@ -82,37 +99,50 @@ class LoginScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        isDense: true,
+                    Observer(
+                      builder: (_) => TextField(
+                        enabled: !loginStore.loading,
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          isDense: true,
+                          errorText: loginStore.passwordError,
+                        ),
+                        obscureText: true,
+                        onChanged: loginStore.setPassword,
                       ),
-                      obscureText: true,
                     ),
                     Container(
                       margin: const EdgeInsets.only(bottom: 12, top: 20),
                       height: 40,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        child: Text(
-                          'ENTRAR',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        style: ButtonStyle(
-                          elevation: MaterialStateProperty.all<double?>(0),
-                          backgroundColor:
-                              MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                              if (states.contains(MaterialState.disabled)) {
-                                return Colors.orange.withOpacity(0.5);
-                              } else {
-                                return Colors.orange;
-                              }
-                            },
-                          ),
-                          shape: MaterialStateProperty.all<OutlinedBorder?>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
+                      child: Observer(
+                        builder: (_) => ElevatedButton(
+                          onPressed: loginStore.logInPressed,
+                          child: loginStore.loading
+                              ? CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation(
+                                    Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  'ENTRAR',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                          style: ButtonStyle(
+                            elevation: MaterialStateProperty.all<double?>(0),
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                                if (states.contains(MaterialState.disabled)) {
+                                  return Colors.orange.withOpacity(0.5);
+                                } else {
+                                  return Colors.orange;
+                                }
+                              },
+                            ),
+                            shape: MaterialStateProperty.all<OutlinedBorder?>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
                             ),
                           ),
                         ),
@@ -136,7 +166,8 @@ class LoginScreen extends StatelessWidget {
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                    builder: (_) => SignupScreen()),
+                                  builder: (_) => SignupScreen(),
+                                ),
                               );
                             },
                             child: Text(
