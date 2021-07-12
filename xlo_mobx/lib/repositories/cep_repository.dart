@@ -25,7 +25,7 @@ class CepRepository {
         cep: response.data?['cep'],
         district: response.data?['bairro'],
         city: City(name: response.data?['localidade']),
-        uf: ufList?.firstWhere((uf) => response.data?['uf']),
+        uf: ufList?.firstWhere((uf) => uf.initials == response.data?['uf']),
       );
     } catch (e) {
       return Future.error('Falha ao buscar CEP');

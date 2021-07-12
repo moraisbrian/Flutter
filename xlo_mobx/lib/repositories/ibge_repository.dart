@@ -10,9 +10,10 @@ class IbgeRepository {
 
     if (preferences.containsKey('UF_LIST')) {
       final value = json.decode(preferences.getString('UF_LIST')!);
-      return value.data?.map<Uf>((e) => Uf.fromJson(e)).toList()
+      return value?.map<Uf>((e) => Uf.fromJson(e)).toList()
         ?..sort(
-          (a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()),
+          (Uf a, Uf b) =>
+              a.name!.toLowerCase().compareTo(b.name!.toLowerCase()),
         );
     }
 
@@ -26,7 +27,8 @@ class IbgeRepository {
 
       return response.data?.map<Uf>((e) => Uf.fromJson(e)).toList()
         ?..sort(
-          (a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()),
+          (Uf a, Uf b) =>
+              a.name!.toLowerCase().compareTo(b.name!.toLowerCase()),
         );
     } on DioError {
       return Future.error('Falha ao obter lista de estados');
@@ -40,13 +42,11 @@ class IbgeRepository {
     try {
       final response = await Dio().get<List>(endpoint);
 
-      final cityList =
-          response.data?.map<City>((e) => City.fromJson(e)).toList()
-            ?..sort(
-              (a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()),
-            );
-
-      return cityList;
+      return response.data?.map<City>((e) => City.fromJson(e)).toList()
+        ?..sort(
+          (City a, City b) =>
+              a.name!.toLowerCase().compareTo(b.name!.toLowerCase()),
+        );
     } on DioError {
       return Future.error('Falha ao obter lista de cidades');
     }
