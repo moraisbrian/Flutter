@@ -10,4 +10,7 @@ class Uf {
   int? id;
   String? initials;
   String? name;
+
+  @override
+  String toString() => 'UF: $id, $initials, $name';
 }
