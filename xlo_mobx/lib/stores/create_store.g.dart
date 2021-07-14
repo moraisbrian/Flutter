@@ -9,6 +9,21 @@ part of 'create_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$CreateStore on _CreateStore, Store {
+  Computed<bool>? _$imagesValidComputed;
+
+  @override
+  bool get imagesValid =>
+      (_$imagesValidComputed ??= Computed<bool>(() => super.imagesValid,
+              name: '_CreateStore.imagesValid'))
+          .value;
+  Computed<String?>? _$imagesErrorComputed;
+
+  @override
+  String? get imagesError =>
+      (_$imagesErrorComputed ??= Computed<String?>(() => super.imagesError,
+              name: '_CreateStore.imagesError'))
+          .value;
+
   final _$categoryAtom = Atom(name: '_CreateStore.category');
 
   @override
@@ -21,6 +36,21 @@ mixin _$CreateStore on _CreateStore, Store {
   set category(Category? value) {
     _$categoryAtom.reportWrite(value, super.category, () {
       super.category = value;
+    });
+  }
+
+  final _$hidePhoneAtom = Atom(name: '_CreateStore.hidePhone');
+
+  @override
+  bool? get hidePhone {
+    _$hidePhoneAtom.reportRead();
+    return super.hidePhone;
+  }
+
+  @override
+  set hidePhone(bool? value) {
+    _$hidePhoneAtom.reportWrite(value, super.hidePhone, () {
+      super.hidePhone = value;
     });
   }
 
@@ -38,9 +68,23 @@ mixin _$CreateStore on _CreateStore, Store {
   }
 
   @override
+  void setHidePhone(bool? value) {
+    final _$actionInfo = _$_CreateStoreActionController.startAction(
+        name: '_CreateStore.setHidePhone');
+    try {
+      return super.setHidePhone(value);
+    } finally {
+      _$_CreateStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
-category: ${category}
+category: ${category},
+hidePhone: ${hidePhone},
+imagesValid: ${imagesValid},
+imagesError: ${imagesError}
     ''';
   }
 }

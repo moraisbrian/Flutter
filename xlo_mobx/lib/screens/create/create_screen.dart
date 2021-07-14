@@ -2,9 +2,9 @@ import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:xlo_mobx/components/custom_drawer/custom_drawer.dart';
+import 'package:xlo_mobx/screens/create/components/hide_phone_field.dart';
 import 'package:xlo_mobx/screens/create/components/images_field.dart';
 import 'package:xlo_mobx/stores/create_store.dart';
-
 import 'components/category_field.dart';
 import 'components/cep_field.dart';
 
@@ -26,48 +26,78 @@ class CreateScreen extends StatelessWidget {
         centerTitle: true,
       ),
       drawer: CustomDrawer(),
-      body: Card(
-        clipBehavior: Clip.antiAlias,
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        elevation: 8,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ImagesField(createStore),
-            TextFormField(
-              decoration: InputDecoration(
-                contentPadding: _contentPadding,
-                labelText: 'Título *',
-                labelStyle: _labelStyle,
-              ),
+      body: Container(
+        alignment: Alignment.center,
+        child: SingleChildScrollView(
+          child: Card(
+            clipBehavior: Clip.antiAlias,
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-            TextFormField(
-              decoration: InputDecoration(
-                contentPadding: _contentPadding,
-                labelText: 'Descrição *',
-                labelStyle: _labelStyle,
-              ),
-              maxLines: null,
-            ),
-            CategoryField(createStore),
-            CepField(),
-            TextFormField(
-              decoration: InputDecoration(
-                contentPadding: _contentPadding,
-                labelText: 'Proço *',
-                labelStyle: _labelStyle,
-                prefixText: 'R\$ ',
-              ),
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                RealInputFormatter(centavos: true),
+            elevation: 8,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ImagesField(createStore),
+                TextFormField(
+                  decoration: InputDecoration(
+                    contentPadding: _contentPadding,
+                    labelText: 'Título *',
+                    labelStyle: _labelStyle,
+                  ),
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    contentPadding: _contentPadding,
+                    labelText: 'Descrição *',
+                    labelStyle: _labelStyle,
+                  ),
+                  maxLines: null,
+                ),
+                CategoryField(createStore),
+                Divider(color: Colors.black),
+                CepField(),
+                TextFormField(
+                  decoration: InputDecoration(
+                    contentPadding: _contentPadding,
+                    labelText: 'Proço *',
+                    labelStyle: _labelStyle,
+                    prefixText: 'R\$ ',
+                  ),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    RealInputFormatter(centavos: true),
+                  ],
+                ),
+                HidePhoneField(createStore),
+                SizedBox(
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith(
+                        (states) {
+                          if (states.contains(MaterialState.disabled)) {
+                            return Colors.orange.withAlpha(120);
+                          } else {
+                            return Colors.orange;
+                          }
+                        },
+                      ),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    onPressed: () {},
+                    child: Text(
+                      'Enviar',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                  ),
+                ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );
