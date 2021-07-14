@@ -1,6 +1,7 @@
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:xlo_mobx/components/custom_drawer/custom_drawer.dart';
 import 'package:xlo_mobx/screens/create/components/hide_phone_field.dart';
 import 'package:xlo_mobx/screens/create/components/images_field.dart';
@@ -41,23 +42,30 @@ class CreateScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 ImagesField(createStore),
-                TextFormField(
-                  decoration: InputDecoration(
-                    contentPadding: _contentPadding,
-                    labelText: 'Título *',
-                    labelStyle: _labelStyle,
+                Observer(
+                  builder: (_) => TextFormField(
+                    onChanged: createStore.setTitle,
+                    decoration: InputDecoration(
+                      errorText: createStore.titleError,
+                      contentPadding: _contentPadding,
+                      labelText: 'Título *',
+                      labelStyle: _labelStyle,
+                    ),
                   ),
                 ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    contentPadding: _contentPadding,
-                    labelText: 'Descrição *',
-                    labelStyle: _labelStyle,
+                Observer(
+                  builder: (_) => TextFormField(
+                    onChanged: createStore.setDescription,
+                    decoration: InputDecoration(
+                      errorText: createStore.descriptionError,
+                      contentPadding: _contentPadding,
+                      labelText: 'Descrição *',
+                      labelStyle: _labelStyle,
+                    ),
+                    maxLines: null,
                   ),
-                  maxLines: null,
                 ),
                 CategoryField(createStore),
-                Divider(color: Colors.black),
                 CepField(),
                 TextFormField(
                   decoration: InputDecoration(

@@ -23,6 +23,48 @@ mixin _$CreateStore on _CreateStore, Store {
       (_$imagesErrorComputed ??= Computed<String?>(() => super.imagesError,
               name: '_CreateStore.imagesError'))
           .value;
+  Computed<bool>? _$titleValidComputed;
+
+  @override
+  bool get titleValid =>
+      (_$titleValidComputed ??= Computed<bool>(() => super.titleValid,
+              name: '_CreateStore.titleValid'))
+          .value;
+  Computed<String?>? _$titleErrorComputed;
+
+  @override
+  String? get titleError =>
+      (_$titleErrorComputed ??= Computed<String?>(() => super.titleError,
+              name: '_CreateStore.titleError'))
+          .value;
+  Computed<bool>? _$descriptionValidComputed;
+
+  @override
+  bool get descriptionValid => (_$descriptionValidComputed ??= Computed<bool>(
+          () => super.descriptionValid,
+          name: '_CreateStore.descriptionValid'))
+      .value;
+  Computed<String?>? _$descriptionErrorComputed;
+
+  @override
+  String? get descriptionError => (_$descriptionErrorComputed ??=
+          Computed<String?>(() => super.descriptionError,
+              name: '_CreateStore.descriptionError'))
+      .value;
+  Computed<bool>? _$categoryValidComputed;
+
+  @override
+  bool get categoryValid =>
+      (_$categoryValidComputed ??= Computed<bool>(() => super.categoryValid,
+              name: '_CreateStore.categoryValid'))
+          .value;
+  Computed<String?>? _$categoryErrorComputed;
+
+  @override
+  String? get categoryError =>
+      (_$categoryErrorComputed ??= Computed<String?>(() => super.categoryError,
+              name: '_CreateStore.categoryError'))
+          .value;
 
   final _$categoryAtom = Atom(name: '_CreateStore.category');
 
@@ -54,6 +96,36 @@ mixin _$CreateStore on _CreateStore, Store {
     });
   }
 
+  final _$titleAtom = Atom(name: '_CreateStore.title');
+
+  @override
+  String get title {
+    _$titleAtom.reportRead();
+    return super.title;
+  }
+
+  @override
+  set title(String value) {
+    _$titleAtom.reportWrite(value, super.title, () {
+      super.title = value;
+    });
+  }
+
+  final _$descriptionAtom = Atom(name: '_CreateStore.description');
+
+  @override
+  String get description {
+    _$descriptionAtom.reportRead();
+    return super.description;
+  }
+
+  @override
+  set description(String value) {
+    _$descriptionAtom.reportWrite(value, super.description, () {
+      super.description = value;
+    });
+  }
+
   final _$_CreateStoreActionController = ActionController(name: '_CreateStore');
 
   @override
@@ -79,12 +151,42 @@ mixin _$CreateStore on _CreateStore, Store {
   }
 
   @override
+  void setTitle(String value) {
+    final _$actionInfo = _$_CreateStoreActionController.startAction(
+        name: '_CreateStore.setTitle');
+    try {
+      return super.setTitle(value);
+    } finally {
+      _$_CreateStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setDescription(String value) {
+    final _$actionInfo = _$_CreateStoreActionController.startAction(
+        name: '_CreateStore.setDescription');
+    try {
+      return super.setDescription(value);
+    } finally {
+      _$_CreateStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 category: ${category},
 hidePhone: ${hidePhone},
+title: ${title},
+description: ${description},
 imagesValid: ${imagesValid},
-imagesError: ${imagesError}
+imagesError: ${imagesError},
+titleValid: ${titleValid},
+titleError: ${titleError},
+descriptionValid: ${descriptionValid},
+descriptionError: ${descriptionError},
+categoryValid: ${categoryValid},
+categoryError: ${categoryError}
     ''';
   }
 }
