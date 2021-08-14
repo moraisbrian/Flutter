@@ -1,11 +1,15 @@
 import 'package:mobx/mobx.dart';
+import 'package:xlo_mobx/models/address.dart';
 import 'package:xlo_mobx/models/category.dart';
+import 'package:xlo_mobx/stores/cep_store.dart';
 
 part 'create_store.g.dart';
 
 class CreateStore = _CreateStore with _$CreateStore;
 
 abstract class _CreateStore with Store {
+  CepStore? cepStore = CepStore();
+
   ObservableList images = ObservableList();
 
   @observable
@@ -20,6 +24,9 @@ abstract class _CreateStore with Store {
   @observable
   String description = '';
 
+  @observable
+  String priceText = '';
+
   @action
   void setCategory(Category value) => category = value;
 
@@ -31,6 +38,9 @@ abstract class _CreateStore with Store {
 
   @action
   void setDescription(String value) => description = value;
+
+  @action
+  void setPrice(String value) => priceText = value;
 
   @computed
   bool get imagesValid => images.isNotEmpty;
@@ -78,5 +88,45 @@ abstract class _CreateStore with Store {
       return null;
     else
       return 'Campo obrigatório';
+  }
+
+  @computed
+  Address? get address => cepStore?.address;
+
+  @computed
+  bool get addressValid => address != null;
+
+  @computed
+  String? get addressError {
+    if (addressValid)
+      return null;
+    else
+      return 'Campo obrigatório';
+  }
+
+  @computed
+  num? get price {
+    if (priceText.contains(',')) {
+      var parse = num.tryParse(priceText.replaceAll(RegExp('[^0-9]'), ''));
+      if (parse != null)
+        return parse / 100;
+      else
+        return null;
+    } else {
+      return num.tryParse(priceText);
+    }
+  }
+
+  @computed
+  bool get priceValid => price != null && price! <= 9999999;
+
+  @computed
+  String? get priceError {
+    if (priceValid)
+      return null;
+    else if (priceText.isEmpty)
+      return 'Campo obrigatório';
+    else
+      return 'Preço inválido';
   }
 }

@@ -65,6 +65,46 @@ mixin _$CreateStore on _CreateStore, Store {
       (_$categoryErrorComputed ??= Computed<String?>(() => super.categoryError,
               name: '_CreateStore.categoryError'))
           .value;
+  Computed<Address?>? _$addressComputed;
+
+  @override
+  Address? get address => (_$addressComputed ??=
+          Computed<Address?>(() => super.address, name: '_CreateStore.address'))
+      .value;
+  Computed<bool>? _$addressValidComputed;
+
+  @override
+  bool get addressValid =>
+      (_$addressValidComputed ??= Computed<bool>(() => super.addressValid,
+              name: '_CreateStore.addressValid'))
+          .value;
+  Computed<String?>? _$addressErrorComputed;
+
+  @override
+  String? get addressError =>
+      (_$addressErrorComputed ??= Computed<String?>(() => super.addressError,
+              name: '_CreateStore.addressError'))
+          .value;
+  Computed<num?>? _$priceComputed;
+
+  @override
+  num? get price => (_$priceComputed ??=
+          Computed<num?>(() => super.price, name: '_CreateStore.price'))
+      .value;
+  Computed<bool>? _$priceValidComputed;
+
+  @override
+  bool get priceValid =>
+      (_$priceValidComputed ??= Computed<bool>(() => super.priceValid,
+              name: '_CreateStore.priceValid'))
+          .value;
+  Computed<String?>? _$priceErrorComputed;
+
+  @override
+  String? get priceError =>
+      (_$priceErrorComputed ??= Computed<String?>(() => super.priceError,
+              name: '_CreateStore.priceError'))
+          .value;
 
   final _$categoryAtom = Atom(name: '_CreateStore.category');
 
@@ -126,6 +166,21 @@ mixin _$CreateStore on _CreateStore, Store {
     });
   }
 
+  final _$priceTextAtom = Atom(name: '_CreateStore.priceText');
+
+  @override
+  String get priceText {
+    _$priceTextAtom.reportRead();
+    return super.priceText;
+  }
+
+  @override
+  set priceText(String value) {
+    _$priceTextAtom.reportWrite(value, super.priceText, () {
+      super.priceText = value;
+    });
+  }
+
   final _$_CreateStoreActionController = ActionController(name: '_CreateStore');
 
   @override
@@ -173,12 +228,24 @@ mixin _$CreateStore on _CreateStore, Store {
   }
 
   @override
+  void setPrice(String value) {
+    final _$actionInfo = _$_CreateStoreActionController.startAction(
+        name: '_CreateStore.setPrice');
+    try {
+      return super.setPrice(value);
+    } finally {
+      _$_CreateStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 category: ${category},
 hidePhone: ${hidePhone},
 title: ${title},
 description: ${description},
+priceText: ${priceText},
 imagesValid: ${imagesValid},
 imagesError: ${imagesError},
 titleValid: ${titleValid},
@@ -186,7 +253,13 @@ titleError: ${titleError},
 descriptionValid: ${descriptionValid},
 descriptionError: ${descriptionError},
 categoryValid: ${categoryValid},
-categoryError: ${categoryError}
+categoryError: ${categoryError},
+address: ${address},
+addressValid: ${addressValid},
+addressError: ${addressError},
+price: ${price},
+priceValid: ${priceValid},
+priceError: ${priceError}
     ''';
   }
 }
