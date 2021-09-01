@@ -129,4 +129,15 @@ abstract class _CreateStore with Store {
     else
       return 'Preço inválido';
   }
+
+  @computed
+  bool get formValid =>
+      imagesValid &&
+      titleValid &&
+      descriptionValid &&
+      categoryValid &&
+      addressValid &&
+      priceValid;
+
+  void send() {}
 }

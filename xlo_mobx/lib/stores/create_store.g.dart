@@ -105,6 +105,12 @@ mixin _$CreateStore on _CreateStore, Store {
       (_$priceErrorComputed ??= Computed<String?>(() => super.priceError,
               name: '_CreateStore.priceError'))
           .value;
+  Computed<bool>? _$formValidComputed;
+
+  @override
+  bool get formValid => (_$formValidComputed ??=
+          Computed<bool>(() => super.formValid, name: '_CreateStore.formValid'))
+      .value;
 
   final _$categoryAtom = Atom(name: '_CreateStore.category');
 
@@ -259,7 +265,8 @@ addressValid: ${addressValid},
 addressError: ${addressError},
 price: ${price},
 priceValid: ${priceValid},
-priceError: ${priceError}
+priceError: ${priceError},
+formValid: ${formValid}
     ''';
   }
 }

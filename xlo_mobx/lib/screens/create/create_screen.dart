@@ -100,7 +100,7 @@ class CreateScreen extends StatelessWidget {
                       ),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    onPressed: () {},
+                    onPressed: createStore.formValid ? createStore.send : null,
                     child: Text(
                       'Enviar',
                       style: TextStyle(color: Colors.white, fontSize: 18),
