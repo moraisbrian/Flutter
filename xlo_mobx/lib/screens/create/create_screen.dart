@@ -85,25 +85,31 @@ class CreateScreen extends StatelessWidget {
                   ),
                 ),
                 HidePhoneField(createStore),
-                SizedBox(
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith(
-                        (states) {
-                          if (states.contains(MaterialState.disabled)) {
-                            return Colors.orange.withAlpha(120);
-                          } else {
-                            return Colors.orange;
-                          }
-                        },
+                Observer(
+                  builder: (_) => SizedBox(
+                    height: 50,
+                    child: GestureDetector(
+                      onTap: createStore.invalidSendPressed,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.resolveWith(
+                            (states) {
+                              if (states.contains(MaterialState.disabled)) {
+                                return Colors.orange.withAlpha(120);
+                              } else {
+                                return Colors.orange;
+                              }
+                            },
+                          ),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        onPressed:
+                            createStore.formValid ? createStore.send : null,
+                        child: Text(
+                          'Enviar',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
                       ),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    onPressed: createStore.formValid ? createStore.send : null,
-                    child: Text(
-                      'Enviar',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   ),
                 ),

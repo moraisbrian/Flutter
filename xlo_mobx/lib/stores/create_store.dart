@@ -1,7 +1,11 @@
+import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
+import 'package:xlo_mobx/models/ad.dart';
 import 'package:xlo_mobx/models/address.dart';
 import 'package:xlo_mobx/models/category.dart';
+import 'package:xlo_mobx/repositories/ad_repository.dart';
 import 'package:xlo_mobx/stores/cep_store.dart';
+import 'package:xlo_mobx/stores/user_manager_store.dart';
 
 part 'create_store.g.dart';
 
@@ -27,6 +31,9 @@ abstract class _CreateStore with Store {
   @observable
   String priceText = '';
 
+  @observable
+  bool showErrors = false;
+
   @action
   void setCategory(Category value) => category = value;
 
@@ -42,12 +49,15 @@ abstract class _CreateStore with Store {
   @action
   void setPrice(String value) => priceText = value;
 
+  @action
+  void invalidSendPressed() => showErrors = true;
+
   @computed
   bool get imagesValid => images.isNotEmpty;
 
   @computed
   String? get imagesError {
-    if (imagesValid)
+    if (!showErrors || imagesValid)
       return null;
     else
       return 'Insira imagens';
@@ -58,7 +68,7 @@ abstract class _CreateStore with Store {
 
   @computed
   String? get titleError {
-    if (titleValid)
+    if (!showErrors || titleValid)
       return null;
     else if (title.isEmpty)
       return 'Título obrigatório';
@@ -71,7 +81,7 @@ abstract class _CreateStore with Store {
 
   @computed
   String? get descriptionError {
-    if (descriptionValid)
+    if (!showErrors || descriptionValid)
       return null;
     else if (description.isEmpty)
       return 'Descrição obrigatória';
@@ -84,7 +94,7 @@ abstract class _CreateStore with Store {
 
   @computed
   String? get categoryError {
-    if (categoryValid)
+    if (!showErrors || categoryValid)
       return null;
     else
       return 'Campo obrigatório';
@@ -98,7 +108,7 @@ abstract class _CreateStore with Store {
 
   @computed
   String? get addressError {
-    if (addressValid)
+    if (!showErrors || addressValid)
       return null;
     else
       return 'Campo obrigatório';
@@ -122,7 +132,7 @@ abstract class _CreateStore with Store {
 
   @computed
   String? get priceError {
-    if (priceValid)
+    if (!showErrors || priceValid)
       return null;
     else if (priceText.isEmpty)
       return 'Campo obrigatório';
@@ -139,5 +149,17 @@ abstract class _CreateStore with Store {
       addressValid &&
       priceValid;
 
-  void send() {}
+  void send() {
+    final ad = Ad();
+    ad.title = title;
+    ad.description = description;
+    ad.category = category;
+    ad.price = price;
+    ad.hidePhone = hidePhone;
+    ad.images = images;
+    ad.address = address;
+    ad.user = GetIt.I<UserManagerStore>().user;
+
+    AdRepository().save(ad);
+  }
 }

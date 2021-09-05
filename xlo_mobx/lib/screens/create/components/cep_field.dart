@@ -38,7 +38,7 @@ class CepField extends StatelessWidget {
           builder: (_) {
             if (cepStore!.address == null &&
                 cepStore!.error == '' &&
-                cepStore!.loading) {
+                !cepStore!.loading) {
               return Container();
             } else if (cepStore!.address == null && cepStore!.error == '') {
               return LinearProgressIndicator(
